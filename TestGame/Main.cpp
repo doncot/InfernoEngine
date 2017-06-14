@@ -35,7 +35,7 @@ INT WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 			Sleep(0);
 		}
 
-		return msg.wParam; //çÏñ@
+		return static_cast<INT>(msg.wParam); //çÏñ@
 	}
 	catch (const std::runtime_error& ex)
 	{
