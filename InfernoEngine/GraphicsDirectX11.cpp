@@ -17,7 +17,7 @@ struct COLOR_VERTEX_FVF
 	XMFLOAT4 color;
 };
 
-struct TEXTURE_VERTEX_FVF
+struct COLOR_TEXTURE_VERTEX_FVF
 {
 	float x, y, z;
 	XMFLOAT4 color;
@@ -32,7 +32,7 @@ COLOR_VERTEX_FVF s_plateVertexes[] =
 	{ 0.25f, -0.25f, 0.0f, XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) }
 };
 
-TEXTURE_VERTEX_FVF s_plateTexturedVertexes[] =
+COLOR_TEXTURE_VERTEX_FVF s_plateTexturedVertexes[] =
 {
 	{ -0.25f, 0.25f, 0.0f, XMFLOAT4(0.0f, 0.0f, 1.0f, 0.8f), {0.0f, 0.0f} },
 	{ 0.25f, 0.25f, 0.0f, XMFLOAT4(0.0f, 1.0f, 0.0f, 0.8f), {1.0f, 0.0f} },
@@ -271,7 +271,7 @@ GraphicsDirectX11::GraphicsDirectX11(HWND hWnd)
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DYNAMIC;                // write access access by CPU and GPU
-	bd.ByteWidth = sizeof(TEXTURE_VERTEX_FVF) * 4;             // size is the VERTEX struct * 3
+	bd.ByteWidth = sizeof(COLOR_TEXTURE_VERTEX_FVF) * 4;             // size is the VERTEX struct * 3
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;       // use as a vertex buffer
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;    // allow CPU to write in buffer
 	m_pDevice->CreateBuffer(&bd, nullptr, &m_pPlateVertexBuffer);       // create the buffer
@@ -455,7 +455,7 @@ void GraphicsDirectX11::Draw()
 #pragma endregion //2d
 
 	// select which vertex buffer to display
-	UINT stride = sizeof(TEXTURE_VERTEX_FVF);
+	UINT stride = sizeof(COLOR_TEXTURE_VERTEX_FVF);
 	UINT offset = 0;
 	m_pDC->IASetVertexBuffers(0, 1, m_pPlateVertexBuffer.GetAddressOf(), &stride, &offset);
 
