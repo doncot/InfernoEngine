@@ -78,13 +78,14 @@ SimpleWindow::~SimpleWindow()
 void SimpleWindow::Resize(const int logicalClientWidth, const int logicalClientHeight)
 {
 	//dpi計算
+	const UINT dpi = GetDpi();
 	const auto dpiScaling = GetDpiScaling();
 
 	const int scaledClientWidth = static_cast<int>(logicalClientWidth * dpiScaling);
 	const int scaledClientHeight = static_cast<int>(logicalClientHeight * dpiScaling);
 
 	RECT newWindowSize = {0, 0, scaledClientWidth, scaledClientHeight };
-	::AdjustWindowRect(&newWindowSize, WindowStyle, FALSE);
+	::AdjustWindowRectExForDpi(&newWindowSize, WindowStyle, FALSE, 0, dpi); //※ この関数はクライアント領域はスケーリングしない
 
 	const int windowWidth = newWindowSize.right - newWindowSize.left;
 	const int windowHeight = newWindowSize.bottom - newWindowSize.top;
@@ -200,6 +201,11 @@ LRESULT WINAPI Inferno::SimpleWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPA
 {
 	switch (msg)
 	{
+	case WM_NCCREATE:
+		//非クライアント領域（タイトルバーなど）のスケーリングを有効にする
+		EnableNonClientDpiScaling(hWnd);
+		return (DefWindowProc(hWnd, msg, wParam, lParam));
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

@@ -47,6 +47,8 @@ public:
 	/// </summary>
 	void SetWindowAlignment(HorizontalAlignment h, VerticalAlignment v);
 
+	static constexpr DWORD GetWindowStyle() noexcept { return WindowStyle; }
+
 	///<summary>
 	///ウィンドウを終了させる
 	///</summary>

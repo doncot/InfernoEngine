@@ -137,19 +137,26 @@ LRESULT WINAPI MessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	case WM_DPICHANGED:
 		{
-			const RECT* rect = (RECT*)lParam;
-			const float dpi = HIWORD(wParam);
-			const int width = rect->right - rect->left;
-			const int height = rect->bottom - rect->top;
-			SetWindowPos(hWnd, HWND_TOP, rect->left, rect->top, width, height, SWP_NOZORDER | SWP_NOACTIVATE);
+			RECT* pRect = (RECT*)lParam;
+			const WORD dpi = HIWORD(wParam);
+			const int width = pRect->right - pRect->left;
+			const int height = pRect->bottom - pRect->top;
+			SetWindowPos(hWnd, HWND_TOP, pRect->left, pRect->top, width, height, SWP_NOZORDER | SWP_NOACTIVATE);
+
+			::AdjustWindowRectExForDpi(pRect, Base::GetWindowStyle(), FALSE, 0, dpi);
+
 			//RedrawWindow(hWnd, nullptr, nullptr, RDW_UPDATENOW | RDW_INVALIDATE);
 			if (s_pGraphics)
 			{
-				s_pGraphics->RecreateScreen(hWnd, dpi / USER_DEFAULT_SCREEN_DPI);
+				s_pGraphics->RecreateScreen(hWnd, dpi / static_cast<float>(USER_DEFAULT_SCREEN_DPI));
 				//Ø‚è‘Ö‚¦Žž‚É•`‰æ
 				s_pGraphics->Draw();
 			}
 		}
+		break;
+
+	case WM_NCCREATE:
+		EnableNonClientDpiScaling(hWnd);
 		break;
 
 	default:
