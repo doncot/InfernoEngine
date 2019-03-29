@@ -20,6 +20,7 @@
 #pragma comment(lib, "Dwrite.lib")
 #pragma comment(lib, "D2d1.lib")
 #include<string>
+#include<stdexcept>
 
 namespace Inferno
 {
