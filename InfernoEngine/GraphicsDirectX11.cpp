@@ -40,17 +40,17 @@ COLOR_TEXTURE_VERTEX_FVF s_plateTexturedVertexes[] =
 	{ 0.25f, -0.25f, 0.0f, XMFLOAT4(1.0f, 0.0f, 1.0f, 0.8f), {1.0f, 1.0f} }
 };
 
-const D3D11_INPUT_ELEMENT_DESC s_coloredVertexDescription[] =
+constexpr D3D11_INPUT_ELEMENT_DESC s_coloredVertexDescription[] =
 {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4*3, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
-const D3D11_INPUT_ELEMENT_DESC s_texturedVertexDescription[] =
+constexpr D3D11_INPUT_ELEMENT_DESC s_texturedVertexDescription[] =
 {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4*3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4*3 + 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
 
@@ -92,15 +92,17 @@ GraphicsDirectX11::GraphicsDirectX11(HWND hWnd)
 		};
 		D3D_FEATURE_LEVEL selectedFeatureLevel;
 
+		ComPtr<ID3D11Device> pDevice;
+		ComPtr<ID3D11DeviceContext> pDC;
 		ThrowIfFailed(
 			::D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
 				createDeviceFlags, featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION,
-				&m_pDevice, &selectedFeatureLevel, &m_pDC)
+				&pDevice, &selectedFeatureLevel, &pDC)
 		);
 
 		//cast to 11.1 interface
-		m_pDevice.As(&m_pDevice1);
-		m_pDC.As(&m_pDC1);
+		pDevice.As(&m_pDevice);
+		pDC.As(&m_pDC);
 	}
 
 	//DXGI
@@ -239,7 +241,7 @@ GraphicsDirectX11::GraphicsDirectX11(HWND hWnd)
 	m_pSwapChain1->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
 
 	// use the back buffer address to create the render target
-	m_pDevice1->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &m_pBackBuffer);
+	m_pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &m_pBackBuffer);
 
 	// set the render target as the back buffer
 	//GetAddressOfを使う理由：http://gamedev.stackexchange.com/questions/81802/how-do-i-use-com-ptr-t-with-rendertargetview-and-depthstencilview
@@ -342,14 +344,14 @@ GraphicsDirectX11::GraphicsDirectX11(HWND hWnd)
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	ThrowIfFailed(m_pDevice1->CreateBlendState1(&blendDesc, &pBlendState));
+	ThrowIfFailed(m_pDevice->CreateBlendState1(&blendDesc, &pBlendState));
 
 	m_pDC->OMSetBlendState(pBlendState.Get(), 0, 0xffffffff);
 #pragma endregion //blending
 
 #ifdef _DEBUG
 	//debug
-	m_pDevice1.As(&m_pD3dDebug);
+	m_pDevice.As(&m_pD3dDebug);
 #endif //_DEBUG
 
 	//透視射影変換行列
@@ -431,25 +433,26 @@ void GraphicsDirectX11::Draw()
 			throw runtime_error("ID2D1DeviceContext#CreateSolidColorBrush()");
 
 		m_p2dDC->BeginDraw();
+		{
+			//m_pRenderTarget->SetTransform(D2D1::IdentityMatrix());
+			//m_pBackBufferRenderTarget->SetTransform(
+			//	D2D1::Matrix3x2F::Scale(targetSize)
+			//);
+			m_p2dDC->SetTransform(
+				D2D1::IdentityMatrix()
+			);
 
-		//m_pRenderTarget->SetTransform(D2D1::IdentityMatrix());
-		//m_pBackBufferRenderTarget->SetTransform(
-		//	D2D1::Matrix3x2F::Scale(targetSize)
-		//);
-		m_p2dDC->SetTransform(
-			D2D1::IdentityMatrix()
-		);
+			//m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
-		//m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
-
-		//LPCTSTR text = _T("ようこそ DirectWrite!!");
-		m_p2dDC->DrawTextW(
-			Text.c_str(),        // The string to render.
-			_tcsclen(Text.c_str()),    // The string's length.
-			m_pTextFormat.Get(),    // The text format.
-			D2D1::RectF(0, 0, targetSize.width, targetSize.height),
-			pBrush.Get()     // The brush used to draw the text.
-		);
+			//LPCTSTR text = _T("ようこそ DirectWrite!!");
+			m_p2dDC->DrawTextW(
+				Text.c_str(),        // The string to render.
+				_tcsclen(Text.c_str()),    // The string's length.
+				m_pTextFormat.Get(),    // The text format.
+				D2D1::RectF(0, 0, targetSize.width, targetSize.height),
+				pBrush.Get()     // The brush used to draw the text.
+			);
+		}
 		m_p2dDC->EndDraw();
 	}
 #pragma endregion //2d
@@ -516,8 +519,8 @@ void GraphicsDirectX11::Draw()
 void GraphicsDirectX11::RecreateScreen(HWND hWnd, float dpiScaling)
 {
 	if (m_pSwapChain1 != nullptr &&
-		m_pDevice1 != nullptr &&
-		m_pDC1 != nullptr &&
+		m_pDevice != nullptr &&
+		m_pDC != nullptr &&
 		m_pBackBuffer != nullptr)
 	{
 		//現在の実際のクライアント領域（物理ピクセル）で取得
@@ -533,7 +536,7 @@ void GraphicsDirectX11::RecreateScreen(HWND hWnd, float dpiScaling)
 		m_2dTargetBitmap.Reset();
 
 		//3d:レンダリングターゲットを解除
-		m_pDC1->OMSetRenderTargets(0, nullptr, nullptr);
+		m_pDC->OMSetRenderTargets(0, nullptr, nullptr);
 		// Release all outstanding references to the swap chain's buffers.
 		m_pBackBuffer.Reset();
 
@@ -550,7 +553,7 @@ void GraphicsDirectX11::RecreateScreen(HWND hWnd, float dpiScaling)
 			(void**)&pBuffer);
 		if (FAILED(hr)) throw runtime_error("failed to create render buffer");
 
-		hr = m_pDevice1->CreateRenderTargetView(pBuffer.Get(), nullptr,
+		hr = m_pDevice->CreateRenderTargetView(pBuffer.Get(), nullptr,
 			&m_pBackBuffer);
 		if (FAILED(hr)) throw runtime_error("failed to create render target");
 

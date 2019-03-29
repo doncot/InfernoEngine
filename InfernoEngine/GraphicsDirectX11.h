@@ -1,6 +1,4 @@
 #pragma once
-#include"Graphics.h"
-
 //#include<dxgi.h>
 #include<dxgi1_2.h>
 //#include<d3d11.h>
@@ -24,38 +22,38 @@
 
 namespace Inferno
 {
-	class GraphicsDirectX11 : public IGraphics
+	class GraphicsDirectX11
 	{
 	public:
 		GraphicsDirectX11() = delete;
 
-		/// <summary>
-		///	コンストラクタ（RAII）
-		/// </summary>
-		/// <exception cref="std::runtime_error" />
+		// <summary>
+		//	コンストラクタ（RAII）
+		// </summary>
+		// <exception cref="std::runtime_error" />
 		GraphicsDirectX11(HWND hWnd);
-		~GraphicsDirectX11() noexcept override final;
+		~GraphicsDirectX11() noexcept;
 
-		/// <summary>
-		/// 指定色でクリア
-		/// </summary>
-		void SetBackgroundColor(int r, int g, int b, int a = 255) override final;
-		void SetBackgroundColor(float r, float g, float b, float a = 1.0f) override final;
+		// <summary>
+		// 指定色でクリア
+		// </summary>
+		void SetBackgroundColor(int r, int g, int b, int a = 255);
+		void SetBackgroundColor(float r, float g, float b, float a = 1.0f);
 
 		void LookAt(const DirectX::XMVECTOR& eye, const DirectX::XMVECTOR& at);
 
-		void Draw() override final;
+		void Draw();
 
-		/// <summary>
-		/// スクリーンバッファ（レンダリングターゲット）を再構成する。
-		/// </summary>
-		/// <exception cref="std::runtime_error">要求が無効だった場合に投げられる。</exception>
+		// <summary>
+		// スクリーンバッファ（レンダリングターゲット）を再構成する。
+		// </summary>
+		// <exception cref="std::runtime_error">要求が無効だった場合に投げられる。</exception>
 		void RecreateScreen(HWND hWnd, float dpiScaling);
 
-		/// <summary>
-		/// フルスクリーンモードの切り替え
-		/// </summary>
-		/// <param name="modeFlag">trueでフルスクリーン、falseでウィンドウ。</param>
+		// <summary>
+		// フルスクリーンモードの切り替え
+		// </summary>
+		// <param name="modeFlag">trueでフルスクリーン、falseでウィンドウ。</param>
 		void SetFullScreenState(bool isFullscreen);
 
 #pragma region fordebug
@@ -83,18 +81,16 @@ namespace Inferno
 
 		//D3D
 		//デバイス
-		Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice;
-		Microsoft::WRL::ComPtr<ID3D11Device1> m_pDevice1;
+		Microsoft::WRL::ComPtr<ID3D11Device1> m_pDevice;
 
 		//デバイスコンテキスト
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_pDC;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_pDC1;
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_pDC;
 		//デバッグデバイス
 		Microsoft::WRL::ComPtr<ID3D11Debug> m_pD3dDebug;
 
-		/// <summary>
-		/// レンダリングターゲット（バックバッファ）
-		/// </summary>
+		// <summary>
+		// レンダリングターゲット（バックバッファ）
+		// </summary>
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pBackBuffer;
 
 		//シェーダー
@@ -102,14 +98,14 @@ namespace Inferno
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPS;
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPS_InvertColor;
 
-		/// <summary>
-		/// 板ポリの頂点バッファ
-		/// </summary>
+		// <summary>
+		// 板ポリの頂点バッファ
+		// </summary>
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_pPlateVertexBuffer;
 
-		/// <summary>
-		/// VSのConstant Buffer
-		/// </summary>
+		// <summary>
+		// VSのConstant Buffer
+		// </summary>
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_pVSConstantBuffer;
 
 		DirectX::XMFLOAT4 m_backgroundColor;
