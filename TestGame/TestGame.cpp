@@ -6,11 +6,6 @@ using namespace Inferno;
 using namespace DirectX;
 using Base = Game;
 
-namespace
-{
-	//Instant rect;
-}
-
 TestGame::TestGame()
 {
 	m_pGraphics->SetBackgroundColor(0.0f, 0.2f, 0.4f);
