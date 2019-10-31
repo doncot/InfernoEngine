@@ -32,7 +32,7 @@ INT WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 				game.GameLoop();
 			}
 
-			Sleep(0);
+			Sleep(1);
 		}
 
 		return static_cast<INT>(msg.wParam); //çÏñ@
