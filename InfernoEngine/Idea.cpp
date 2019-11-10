@@ -1,6 +1,6 @@
 #include"Idea.h"
 #include"GameElementsCommon.h"
-#include"Graphics.h"
+#include"GraphicsDirectX11.h"
 
 using namespace Inferno;
 using namespace DirectX;

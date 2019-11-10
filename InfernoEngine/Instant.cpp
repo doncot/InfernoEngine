@@ -1,6 +1,6 @@
 #include"Instant.h"
 #include"Substance.h"
-#include"Graphics.h"
+#include"GraphicsDirectX11.h"
 #include"WindowsCommon.h"
 
 using namespace Inferno;

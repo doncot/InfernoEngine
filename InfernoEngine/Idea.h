@@ -1,7 +1,6 @@
 #pragma once
+#include <DirectXMath.h>
 
-#include"Graphics.h"
-//#include<Texture.h>
 
 namespace Inferno
 {

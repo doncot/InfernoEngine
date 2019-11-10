@@ -1,7 +1,7 @@
 #define _USE_MATH_DEFINES //一番上にやる必要あり（プロジェクト設定からでもよい）
 #include<cmath>
 
-#include"Graphics.h"
+#include"GraphicsDirectX11.h"
 #include"Substance.h"
 #include"GameElementsCommon.h"
 
@@ -146,7 +146,7 @@ void Substance::Update()
 	}*/
 }
 
-void Substance::Draw(const IGraphics& g) const
+void Substance::Draw(const GraphicsDirectX11& g) const
 {
 	//描画状態でない場合、帰る
 	if (!CheckAttribute(GEAttribute::Visible)) return;

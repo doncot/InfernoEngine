@@ -1,6 +1,6 @@
 #pragma once
 #include"GameElementsCommon.h"
-#include"Graphics.h"
+#include"GraphicsDirectX11.h"
 #include"Idea.h"
 
 using namespace DirectX;
@@ -56,7 +56,7 @@ namespace Inferno
 
 		virtual void Update();
 
-		void Draw(const IGraphics& g) const;
+		void Draw(const const GraphicsDirectX11& g) const;
 
 		//コピーコンストラクタ＆代入演算子必要
 		Substance& operator=(const Substance& s);
