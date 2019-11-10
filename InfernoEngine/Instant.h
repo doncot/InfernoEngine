@@ -2,6 +2,7 @@
 #include"GameElementsCommon.h"
 #include"Idea.h"
 #include"Substance.h"
+#include<memory>
 
 namespace Inferno
 {
