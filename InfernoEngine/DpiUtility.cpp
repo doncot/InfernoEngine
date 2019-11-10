@@ -17,7 +17,6 @@ float Inferno::GetDpi(HWND hWnd)
 	{
 	case PROCESS_DPI_AWARENESS::PROCESS_SYSTEM_DPI_AWARE:
 		dpi = ::GetDpiForSystem();
-
 		break;
 
 	case PROCESS_DPI_AWARENESS::PROCESS_PER_MONITOR_DPI_AWARE:
@@ -28,8 +27,8 @@ float Inferno::GetDpi(HWND hWnd)
 		unsigned int dpiY;
 		// ÉÇÉjÉ^Å[ÇÃdpiÇéÊìæ
 		::GetDpiForMonitor(hMonitor, MONITOR_DPI_TYPE::MDT_EFFECTIVE_DPI, &dpi, &dpiY);
+		break;
 	}
-	break;
 
 	default:
 		throw std::logic_error("unknown dpi awareness");
