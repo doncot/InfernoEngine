@@ -208,6 +208,11 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InfernoEngine\InfernoEngine.vcxproj">
+      <Project>{2b418fc8-1c9a-4974-91a2-f2524dac5bb7}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>
