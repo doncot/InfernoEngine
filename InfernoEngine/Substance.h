@@ -56,7 +56,7 @@ namespace Inferno
 
 		virtual void Update();
 
-		void Draw(const const GraphicsDirectX11& g) const;
+		void Draw(const GraphicsDirectX11& g) const;
 
 		//コピーコンストラクタ＆代入演算子必要
 		Substance& operator=(const Substance& s);
